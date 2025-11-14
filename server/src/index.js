@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
@@ -14,10 +15,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev')); // Logging middleware
 
+// Static folder for uploads
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
-const morgan = require('morgan');
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
@@ -27,7 +28,6 @@ const submissionRoutes = require('./routes/submissionRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const stateRoutes = require('./routes/stateRoutes');
 
-app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/questions', questionRoutes);
@@ -43,8 +43,13 @@ app.use((req, res, next) => {
 });
 
 // Global error handler
-const errorHandler = require('./middlewares/errorHandler');
+const errorHandler = require('./middlewares/errorHandler'); // Corrected path to 'middlewares'
 app.use(errorHandler);
+
+// 404 handler - This should be *after* routes and *before* the global error handler
+app.use((req, res, next) => {
+  res.status(404).json({ message: 'Not Found - Invalid API Endpoint' });
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)

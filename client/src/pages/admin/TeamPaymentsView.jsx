@@ -8,7 +8,8 @@ const TeamPaymentsView = () => {
   const [loading, setLoading] = useState(true);
   const { showModal, user } = useAppContext();
   
-  // 1. Function to fetch all teams
+  // 1. All modal state ('selectedImage', 'selectedTeam') is GONE.
+
   const fetchTeams = async () => {
     try {
       setLoading(true);
@@ -22,15 +23,15 @@ const TeamPaymentsView = () => {
   };
 
   useEffect(() => {
-    fetchTeams();
-  }, [showModal]);
+    if (user) {
+      fetchTeams();
+    }
+  }, [user, showModal]);
 
-  // 2. Handle verifying payment (Unchanged)
   const handleVerify = async (teamId) => {
     try {
       await axios.post(`http://localhost:5000/api/teams/${teamId}/verify-payment`);
       showModal('Payment verified!', 'success');
-      // Update local state
       setTeams(prevTeams =>
         prevTeams.map(team =>
           team._id === teamId ? { ...team, paymentStatus: 'completed' } : team
@@ -41,18 +42,15 @@ const TeamPaymentsView = () => {
     }
   };
 
-  // --- 3. ADDED: Handle Deleting a Team ---
+  // 2. The 'handleViewImage' function is GONE.
+
   const handleDeleteTeam = async (teamId) => {
-    // This is the new, stronger warning message
     if (!window.confirm('DANGER: Are you sure you want to delete this team? This will also delete ALL USER ACCOUNTS for all members of this team. This action cannot be undone.')) {
       return;
     }
-    
     try {
-      // Calls the new backend route
       await axios.delete(`http://localhost:5000/api/teams/${teamId}`);
       showModal('Team and all members removed successfully', 'success');
-      // Update UI by filtering out the deleted team
       setTeams(prevTeams => prevTeams.filter(team => team._id !== teamId));
     } catch (error) {
       showModal(error.response?.data?.message || 'Failed to remove team');
@@ -73,7 +71,8 @@ const TeamPaymentsView = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-700">
-            <tr>
+             {/* ... (Your table headers are correct) ... */}
+             <tr>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Team Name</th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Members</th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Payment</th>
@@ -94,10 +93,12 @@ const TeamPaymentsView = () => {
                   </span>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+                  {/* --- 3. THIS IS THE FIX --- */}
+                  {/* Replaced <button> with <a> tag */}
                   {team.paymentProof ? (
-                    <a 
-                      href={`http://localhost:5000/${team.paymentProof.replace(/\\/g, '/')}`} 
-                      target="_blank" 
+                    <a
+                      href={`http://localhost:5000/${team.paymentProof.replace(/\\/g, '/')}`}
+                      target="_blank" // This opens a new tab
                       rel="noopener noreferrer"
                       className="text-indigo-400 hover:text-indigo-300 underline"
                     >
@@ -118,8 +119,7 @@ const TeamPaymentsView = () => {
                       Verify
                     </Button>
                   )}
-                  
-                  {/* --- 4. ADDED: Delete Team Button --- */}
+                  {/* Delete Team Button */}
                   <Button
                     variant="secondary"
                     className="py-1 px-2 text-xs !bg-red-800 hover:!bg-red-700"
@@ -133,6 +133,9 @@ const TeamPaymentsView = () => {
           </tbody>
         </table>
       </div>
+
+      {/* --- 4. All modal JSX is GONE --- */}
+      
     </div>
   );
 };

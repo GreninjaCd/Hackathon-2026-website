@@ -22,6 +22,23 @@ const teamSchema = new mongoose.Schema({
   },
   transactionId: { type: String, default: null },
   paymentProof: { type: String, default: null },
+  round1TestStartedAt: {
+    type: Date,
+    default: null
+  },
+  round1TestFinished: {
+    type: Boolean,
+    default: false
+  },
+  round1Score: {
+    type: Number,
+    default: 0
+  },
+  round1Submission: {
+    type: Map, 
+    of: String,
+    default: {}
+  },
   round1Status: {
     type: String,
     enum: ['not_started', 'in_progress', 'completed'],
@@ -34,7 +51,7 @@ const teamSchema = new mongoose.Schema({
 
   round2Status: {
     type: String,
-    enum: ['not_started', 'in_progress', 'completed'],
+    enum: ['not_started', 'in_progress', 'submitted', 'completed'],
     default: 'not_started'
   },
   

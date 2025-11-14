@@ -4,22 +4,29 @@ const Question = require('../models/Question');
 // @route   POST /api/questions
 const createQuestion = async (req, res) => {
   try {
-    const { round, title, description, points, deadline, options, correctOption } = req.body;
+    const { round, title, description, deadline, options, correctOption } = req.body;
 
-    // Logic for Round 1 (MCQ)
+    // --- 1. THIS IS THE FIX FOR ROUND 1 ---
+    // We only create an object with Round 1 fields
     if (round === 1) {
       if (!title || !options || options.length !== 4 || correctOption === undefined) {
         return res.status(400).json({ message: 'MCQ must have a title, 4 options, and a correctOption' });
       }
-      const q = await Question.create({ round, title, options, correctOption });
+      
+      const newQuestion = { round, title, options, correctOption };
+      const q = await Question.create(newQuestion);
       return res.status(201).json(q);
     }
 
-    // --- 1. THIS IS THE FIX ---
-    // We simplify this logic. The 'handleSaveProblem' on the frontend
-    // will decide whether to create or update. This function will just create.
+    // --- 2. THIS IS THE FIX FOR ROUND 2 ---
+    // We only create an object with Round 2 fields
     if (round === 2) {
-      const q = await Question.create({ round, title, description, points, deadline });
+      if (!title || !description) {
+        return res.status(400).json({ message: 'Round 2 problem must have a title and description' });
+      }
+      
+      const newQuestion = { round, title, description, deadline: deadline || null };
+      const q = await Question.create(newQuestion);
       return res.status(201).json(q);
     }
     
@@ -28,7 +35,6 @@ const createQuestion = async (req, res) => {
   } catch (error) {
     console.error('createQuestion error', error);
     if (error.code === 11000) {
-      // This will catch if a R1 question has a duplicate title
       return res.status(400).json({ message: 'A question with this title already exists.' });
     }
     res.status(500).json({ message: 'Server error' });

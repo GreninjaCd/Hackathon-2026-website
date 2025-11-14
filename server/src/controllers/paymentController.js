@@ -24,13 +24,12 @@ exports.submitProof = async (req, res) => {
     team.transactionId = req.body.transactionId;
     team.paymentProof = req.file.path; // Save the file path (e.g., 'uploads/proof-12345.png')
     
-    // We do NOT set paymentStatus = 'completed'. We leave it 'pending'.
-    
     await team.save();
 
     res.json({ message: 'Proof submitted. Awaiting admin verification.' });
 
-  } catch (error) {
+  } catch (error)
+ {
     console.error('submitProof error', error);
     res.status(500).json({ message: 'Server error' });
   }
