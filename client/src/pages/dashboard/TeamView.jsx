@@ -14,6 +14,10 @@ const TeamView = () => {
   // State for the "Create Team" form
   const [teamName, setTeamName] = useState('');
 
+  if (!user) {
+    return <p className="text-gray-300 text-center">Loading user...</p>;
+  }
+  
   // 1. This effect runs when the component loads
   useEffect(() => {
     // Check if the user is in a team (based on context)

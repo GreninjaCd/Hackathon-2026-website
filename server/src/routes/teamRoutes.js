@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, admin } = require('../middlewares/authMiddleware');
-const { createTeam, getTeamById, addMember, getMyTeam, getAllTeams, verifyTeamPayment, deleteTeam } = require('../controllers/teamController');
+const { createTeam, getTeamById, addMember, getMyTeam, getAllTeams, verifyTeamPayment, deleteTeam, getRound1Results, advanceTeamToFinale } = require('../controllers/teamController');
 
 // Create team
 router.post('/', protect, createTeam);
@@ -21,6 +21,10 @@ router.get('/', protect, admin, getAllTeams);
 router.post('/:id/verify-payment', protect, admin, verifyTeamPayment);
 
 router.delete('/:id',protect,admin,deleteTeam);
+
+router.get('/results/1', protect,getRound1Results);
+
+router.post('/:id/advance', protect, admin, advanceTeamToFinale);
 
 router.get('/:id', protect, getTeamById);
 

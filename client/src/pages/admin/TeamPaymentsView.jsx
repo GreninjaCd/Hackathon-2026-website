@@ -6,8 +6,8 @@ import Button from '../../components/Button';
 const TeamPaymentsView = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { showModal } = useAppContext();
-
+  const { showModal, user } = useAppContext();
+  
   // 1. Function to fetch all teams
   const fetchTeams = async () => {
     try {
@@ -59,7 +59,10 @@ const TeamPaymentsView = () => {
     }
   };
 
-
+  if (!user) {
+    return <p className="text-gray-300 text-center">Loading...</p>;
+  }
+  
   if (loading) {
     return <p className="text-gray-300 text-center">Loading teams...</p>;
   }

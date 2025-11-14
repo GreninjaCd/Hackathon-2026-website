@@ -149,6 +149,42 @@ const deleteTeam = async (req, res) => {
   }
 };
 
+// @desc    Admin: Get ranked results for Round 1
+// @route   GET /api/teams/results/1
+const getRound1Results = async (req, res) => {
+  try {
+    // 1. Find all teams that have completed payment
+    const teams = await Team.find({ paymentStatus: 'completed' })
+      .select('name round1FinalScore round1AvgSubmissionTime members')
+      .populate('leader', 'name')
+      .sort({ round1FinalScore: -1, round1AvgSubmissionTime: 1 }); // 2. Sort by score (high to low), then time (low to high)
+
+    res.json(teams);
+  } catch (error)
+ {
+    console.error('getRound1Results error', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const advanceTeamToFinale = async (req, res) => {
+  try {
+    const team = await Team.findById(req.params.id);
+
+    if (!team) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    // Set the team as a finalist
+    team.isFinalist = true;
+    await team.save();
+    
+    res.json({ message: 'Team advanced to finale', team });
+  } catch (error) {
+    console.error('advanceTeamToFinale error', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 // This export object is now correct
 module.exports = {
@@ -158,5 +194,7 @@ module.exports = {
   getMyTeam,
   getAllTeams,
   verifyTeamPayment,
-  deleteTeam
+  deleteTeam,
+  getRound1Results,
+  advanceTeamToFinale
 };

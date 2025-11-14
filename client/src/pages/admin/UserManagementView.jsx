@@ -7,7 +7,7 @@ import { useAppContext } from '../../context/AppContext';
 const UserManagementView = () => {
   const [users, setUsers] = useState([]); // 1. State to hold real users
   const [loading, setLoading] = useState(true);
-  const { showModal } = useAppContext();
+  const { showModal, user } = useAppContext();
 
   // 2. Fetch users when the component loads
   useEffect(() => {
@@ -45,6 +45,10 @@ const UserManagementView = () => {
     }
   };
 
+  if (!user) {
+    return <p className="text-gray-300 text-center">Loading...</p>;
+  }
+  
   if (loading) {
     return <p className="text-gray-300 text-center p-4">Loading users...</p>;
   }

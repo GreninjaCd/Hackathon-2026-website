@@ -3,6 +3,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const quizRoutes = require('./routes/quizRoutes');
+const downloadRoutes = require('./routes/downloadRoutes');
 
 dotenv.config();
 
@@ -23,6 +25,7 @@ const teamRoutes = require('./routes/teamRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const stateRoutes = require('./routes/stateRoutes');
 
 app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
@@ -30,6 +33,9 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/state', stateRoutes);
+app.use('/api/quiz', quizRoutes);
+app.use('/api/download', downloadRoutes);
 
 // 404 handler
 app.use((req, res, next) => {

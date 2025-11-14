@@ -27,10 +27,20 @@ const teamSchema = new mongoose.Schema({
     enum: ['not_started', 'in_progress', 'completed'],
     default: 'not_started'
   },
+  
+  // --- ADD THESE TWO LINES ---
+  round1FinalScore: { type: Number, default: 0 },
+  round1AvgSubmissionTime: { type: Number, default: 0 }, // in seconds
+
   round2Status: {
     type: String,
     enum: ['not_started', 'in_progress', 'completed'],
     default: 'not_started'
+  },
+  
+  isFinalist: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

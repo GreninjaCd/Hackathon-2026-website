@@ -14,38 +14,38 @@ import RegisterPage from './pages/RegisterPage';
 
 // Participant Dashboard
 import DashboardPage from './pages/dashboard/DashboardPage';
+import QuizTaker from './pages/dashboard/QuizTaker';
 
 // Admin Dashboard
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 
-// A custom component to protect routes
+// --- 1. THE CORRECT, WORKING PROTECTED ROUTE ---
+// We define it right here so we know it's the correct version.
 const ProtectedRoute = ({ children, role }) => {
-  // 1. Get the new context variables
   const { isLoggedIn, user } = useAppContext();
 
-  // 2. Check if the app is still fetching the user
-  // (This 'user' object comes from the /api/auth/profile call in your context)
+  // This check waits for the AppContext to finish loading the user
   if (user === null) {
-    // We are still loading, so wait.
-    // You can show a loading spinner here.
-    return <div className="text-center p-10">Loading...</div>;
+    // Show a loading screen while we verify the user
+    return <div className="text-center p-10 text-white">Loading...</div>;
   }
   
-  // 3. Check if logged in (now 'user' is loaded or still null)
+  // After loading, check if they are logged in
   if (!isLoggedIn) {
-    // If not logged in, redirect to login
+    // If not, send them to the login page
     return <Navigate to="/login" replace />;
   }
   
-  // 4. Check if the role is correct (using 'user.role')
+  // After loading, check if they have the correct role
   if (role && user.role !== role) {
-    // If logged in but wrong role, redirect to home
+    // If they are the wrong role (e.g., a user trying /admin), send to home
     return <Navigate to="/" replace />;
   }
   
-  // If logged in and correct role (or no role specified), show the page
+  // If all checks pass, show the page they asked for
   return children;
 };
+
 
 export default function App() {
   const { modal, closeModal }= useAppContext();
@@ -62,12 +62,22 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          {/* Participant Protected Route */}
+          {/* --- 2. ALL ROUTES ARE NOW WRAPPED WITH THE CORRECT <ProtectedRoute> --- */}
+          
+          {/* Participant Protected Routes */}
           <Route 
             path="/dashboard" 
             element={
               <ProtectedRoute role="user">
                 <DashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/quiz/1" 
+            element={
+              <ProtectedRoute role="user">
+                <QuizTaker />
               </ProtectedRoute>
             } 
           />
