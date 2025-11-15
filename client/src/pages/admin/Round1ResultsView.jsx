@@ -8,7 +8,7 @@ const Round1ResultsView = () => {
   const [rankedTeams, setRankedTeams] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch the ranked results
+  // Fetch Results
   useEffect(() => {
     if (user) {
       const fetchResults = async () => {
@@ -26,62 +26,128 @@ const Round1ResultsView = () => {
     }
   }, [user, showModal]);
 
-  // 2. Calculate the top 30%
-  const qualifyingCount = Math.ceil(rankedTeams.length * 0.30);
+  const qualifyingCount = Math.ceil(rankedTeams.length * 0.3);
 
-  if (!user) {
-    return <p className="text-gray-300 text-center">Loading...</p>;
-  }
-
-  if (loading) {
-    return <p className="text-gray-300 text-center">Loading results...</p>;
-  }
+  if (!user) return <p className="text-center text-[#00e5ff]">Loading…</p>;
+  if (loading) return <p className="text-center text-[#00e5ff] animate-pulse">Loading results…</p>;
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-white mb-6">Round 1 Leaderboard</h2>
-      
-      <div className="bg-gray-800 p-4 rounded-lg mb-6">
-        <p className="text-white">
-          Showing <span className="font-bold">{rankedTeams.length}</span> paid teams, sorted by score and submission time.
+    <div className="animate-fadeIn space-y-8">
+
+      {/* Title */}
+      <h2 className="
+        text-4xl font-extrabold 
+        bg-gradient-to-r from-[#00ff7f] to-[#00e5ff]
+        bg-clip-text text-transparent
+        drop-shadow-[0_0_25px_rgba(0,255,127,0.5)]
+      ">
+        Round 1 – Leaderboard
+      </h2>
+
+      {/* Info Card */}
+      <div className="
+        p-6 rounded-xl
+        bg-[#001012]/80 backdrop-blur-md
+        border border-[#00ff7f44]
+        shadow-[0_0_20px_rgba(0,255,127,0.25)]
+      ">
+        <p className="text-gray-300">
+          Showing <span className="font-bold text-[#00ff7f]">{rankedTeams.length}</span> verified teams.
         </p>
-        <p className="text-green-400 font-semibold">
-          The top {qualifyingCount} teams (Top 30%) advance to Round 2.
+        <p className="text-[#00ffae] font-semibold mt-1">
+          Top {qualifyingCount} teams (Top 30%) advance to Round 2.
         </p>
+
+        <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[#00ff7f] to-transparent mt-4 opacity-80"></div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-700">
-          <thead className="bg-gray-700">
+      {/* Leaderboard Table */}
+      <div className="
+        overflow-x-auto rounded-xl
+        border border-[#00e5ff33]
+        shadow-[0_0_20px_rgba(0,229,255,0.2)]
+      ">
+        <table className="min-w-full divide-y divide-[#00e5ff33] bg-[#0a0f14]">
+          <thead className="bg-[#001b26]">
             <tr>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Rank</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Team Name</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Score (Avg)</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Time (Avg)</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+              {['Rank', 'Team', 'Score (Avg)', 'Time (Avg)', 'Status'].map((h) => (
+                <th
+                  key={h}
+                  className="
+                    px-4 py-3 text-left text-xs font-bold tracking-wider
+                    text-[#00e5ff] uppercase
+                  ">
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="bg-gray-800 divide-y divide-gray-700">
-            {rankedTeams.map((team, index) => (
-              <tr key={team._id} className={index < qualifyingCount ? 'bg-green-900' : ''}>
-                <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-white">{index + 1}</td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-white">{team.name}</td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{team.round1FinalScore.toFixed(2)}</td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{team.round1AvgSubmissionTime.toFixed(0)} sec</td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm">
-                  {index < qualifyingCount ? (
-                    <span className="flex items-center text-green-400 font-semibold">
-                      <Award className="h-4 w-4 mr-1" /> Advanced
+
+          <tbody className="divide-y divide-[#00e5ff22]">
+            {rankedTeams.map((team, index) => {
+              const advanced = index < qualifyingCount;
+
+              return (
+                <tr
+                  key={team._id}
+                  className={`
+                    transition-all
+                    ${advanced
+                      ? 'bg-[#003d29]/60 hover:bg-[#004d36]/70 shadow-[0_0_12px_rgba(0,255,127,0.25)]'
+                      : 'hover:bg-[#0f1b25]'
+                    }
+                  `}
+                >
+
+                  {/* Rank */}
+                  <td className="px-4 py-3 text-sm font-bold text-white flex items-center gap-2">
+                    <span
+                      className={`
+                        px-3 py-1 rounded-md text-xs
+                        ${advanced
+                          ? 'bg-[#00ff7f33] text-[#00ffae] border border-[#00ff7f55]'
+                          : 'bg-[#1a1f24] text-gray-400 border border-gray-600'
+                        }
+                      `}
+                    >
+                      #{index + 1}
                     </span>
-                  ) : (
-                    <span className="text-gray-500">Eliminated</span>
-                  )}
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                  {/* Team Name */}
+                  <td className="px-4 py-3 text-white text-sm">
+                    {team.name}
+                  </td>
+
+                  {/* Score */}
+                  <td className="px-4 py-3 text-[#00e5ff] text-sm font-semibold">
+                    {team.round1FinalScore.toFixed(2)}
+                  </td>
+
+                  {/* Time */}
+                  <td className="px-4 py-3 text-gray-300 text-sm">
+                    {team.round1AvgSubmissionTime.toFixed(0)} sec
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-4 py-3">
+                    {advanced ? (
+                      <span className="flex items-center text-[#00ff7f] font-semibold">
+                        <Award className="h-4 w-4 mr-1 text-[#00ffae]" />
+                        Advanced
+                      </span>
+                    ) : (
+                      <span className="text-gray-500">Eliminated</span>
+                    )}
+                  </td>
+
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
+
     </div>
   );
 };

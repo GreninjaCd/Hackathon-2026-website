@@ -8,8 +8,8 @@ const CertificateView = () => {
   const { user, showModal } = useAppContext();
   const [state, setState] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // File state
+
+  // File states
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
 
@@ -26,22 +26,20 @@ const CertificateView = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchData();
-    }
+    if (user) fetchData();
   }, [user]);
 
   const handleUpload = async (e, round) => {
     e.preventDefault();
-    const file = (round === 1) ? file1 : file2;
-    
+    const file = round === 1 ? file1 : file2;
+
     if (!file) {
       showModal('Please select a file to upload.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('certificate', file); // Must match backend route
+    formData.append('certificate', file);
 
     try {
       const { data } = await axios.post(
@@ -49,60 +47,137 @@ const CertificateView = () => {
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
-      setState(data.state); // Update state with new file path
-      showModal('Certificate uploaded!', 'success');
+
+      setState(data.state);
       setFile1(null);
       setFile2(null);
+      showModal('Certificate uploaded successfully!', 'success');
+
     } catch (error) {
       showModal(error.response?.data?.message || 'Upload failed');
     }
   };
-  
+
   if (!user || loading) {
-    return <p className="text-gray-300 text-center">Loading...</p>;
+    return (
+      <p className="text-center text-[#00e5ff] animate-pulse">
+        Loading…
+      </p>
+    );
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-white mb-6">Certificate Management</h2>
+    <div className="space-y-12 animate-fadeIn">
 
-      {/* --- Round 1 Upload Form --- */}
-      <Card className="bg-gray-800 p-6 mb-8">
-        <h3 className="text-xl font-semibold text-white mb-4">Round 1 (Participation)</h3>
+      <h2
+        className="
+          text-4xl font-extrabold mb-4
+          bg-gradient-to-r from-[#00ff7f] to-[#00e5ff]
+          bg-clip-text text-transparent
+          drop-shadow-[0_0_25px_rgba(0,255,127,0.5)]
+        "
+      >
+        Certificate Management
+      </h2>
+
+      {/* ---------------- ROUND 1 CERTIFICATES ---------------- */}
+      <Card
+        className="
+          p-8 rounded-xl
+          bg-[#001012]/80 backdrop-blur-md
+          border border-[#00ff7f44]
+          shadow-[0_0_20px_rgba(0,255,127,0.2)]
+        "
+      >
+        <h3 className="text-2xl font-bold text-[#00ffae] mb-4">
+          Round 1 – Participation Certificate
+        </h3>
+
         {state.round1CertificatePath ? (
-          <p className="text-green-400">Current File: {state.round1CertificatePath}</p>
+          <p className="text-[#00ffb0] mb-3">
+            Current File: <span className="text-gray-300">{state.round1CertificatePath}</span>
+          </p>
         ) : (
-          <p className="text-yellow-400">No template uploaded yet.</p>
+          <p className="text-yellow-400 mb-3">
+            No template uploaded yet.
+          </p>
         )}
-        <form onSubmit={(e) => handleUpload(e, 1)} className="mt-4 space-y-4">
-          <input 
-            type="file" 
+
+        <form
+          onSubmit={(e) => handleUpload(e, 1)}
+          className="space-y-5 mt-4"
+        >
+          <input
+            type="file"
             accept=".pdf,.png,.jpg"
             onChange={(e) => setFile1(e.target.files[0])}
-            className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"
+            className="
+              block w-full text-sm text-gray-300
+              file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+              file:bg-[#00e5ff] file:text-black
+              hover:file:bg-[#00c2e6]
+              transition-all duration-300
+            "
           />
-          <Button type="submit">Upload R1 Certificate</Button>
+
+          <Button
+            type="submit"
+            className="w-full py-2 text-lg"
+          >
+            Upload Round 1 Certificate
+          </Button>
         </form>
       </Card>
 
-      {/* --- Round 2 Upload Form --- */}
-      <Card className="bg-gray-800 p-6 mb-8">
-        <h3 className="text-xl font-semibold text-white mb-4">Round 2 (Advancement)</h3>
+      {/* ---------------- ROUND 2 CERTIFICATES ---------------- */}
+      <Card
+        className="
+          p-8 rounded-xl
+          bg-[#001012]/80 backdrop-blur-md
+          border border-[#00e5ff44]
+          shadow-[0_0_20px_rgba(0,229,255,0.2)]
+        "
+      >
+        <h3 className="text-2xl font-bold text-[#00e5ff] mb-4">
+          Round 2 – Advancement Certificate
+        </h3>
+
         {state.round2CertificatePath ? (
-          <p className="text-green-400">Current File: {state.round2CertificatePath}</p>
+          <p className="text-[#7af2ff] mb-3">
+            Current File: <span className="text-gray-300">{state.round2CertificatePath}</span>
+          </p>
         ) : (
-          <p className="text-yellow-400">No template uploaded yet.</p>
+          <p className="text-yellow-400 mb-3">
+            No template uploaded yet.
+          </p>
         )}
-        <form onSubmit={(e) => handleUpload(e, 2)} className="mt-4 space-y-4">
-          <input 
-            type="file" 
+
+        <form
+          onSubmit={(e) => handleUpload(e, 2)}
+          className="space-y-5 mt-4"
+        >
+          <input
+            type="file"
             accept=".pdf,.png,.jpg"
             onChange={(e) => setFile2(e.target.files[0])}
-            className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"
+            className="
+              block w-full text-sm text-gray-300
+              file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+              file:bg-[#00ff7f] file:text-black
+              hover:file:bg-[#00d86a]
+              transition-all duration-300
+            "
           />
-          <Button type="submit">Upload R2 Certificate</Button>
+
+          <Button
+            type="submit"
+            className="w-full py-2 text-lg"
+          >
+            Upload Round 2 Certificate
+          </Button>
         </form>
       </Card>
+
     </div>
   );
 };

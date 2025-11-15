@@ -14,7 +14,7 @@ import RegisterPage from './pages/RegisterPage';
 
 // Participant Dashboard
 import DashboardPage from './pages/dashboard/DashboardPage';
-import QuizTaker from './pages/dashboard/QuizTaker';
+import QuizTaker from './pages/dashboard/quizTaker';
 
 // Admin Dashboard
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';

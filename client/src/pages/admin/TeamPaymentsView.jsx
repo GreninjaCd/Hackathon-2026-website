@@ -7,8 +7,6 @@ const TeamPaymentsView = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const { showModal, user } = useAppContext();
-  
-  // 1. All modal state ('selectedImage', 'selectedTeam') is GONE.
 
   const fetchTeams = async () => {
     try {
@@ -23,17 +21,15 @@ const TeamPaymentsView = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchTeams();
-    }
+    if (user) fetchTeams();
   }, [user, showModal]);
 
   const handleVerify = async (teamId) => {
     try {
       await axios.post(`http://localhost:5000/api/teams/${teamId}/verify-payment`);
       showModal('Payment verified!', 'success');
-      setTeams(prevTeams =>
-        prevTeams.map(team =>
+      setTeams(prev =>
+        prev.map(team =>
           team._id === teamId ? { ...team, paymentStatus: 'completed' } : team
         )
       );
@@ -42,100 +38,118 @@ const TeamPaymentsView = () => {
     }
   };
 
-  // 2. The 'handleViewImage' function is GONE.
-
   const handleDeleteTeam = async (teamId) => {
-    if (!window.confirm('DANGER: Are you sure you want to delete this team? This will also delete ALL USER ACCOUNTS for all members of this team. This action cannot be undone.')) {
+    if (!window.confirm('DANGER: Delete team and ALL member accounts? This cannot be undone.'))
       return;
-    }
+
     try {
       await axios.delete(`http://localhost:5000/api/teams/${teamId}`);
-      showModal('Team and all members removed successfully', 'success');
-      setTeams(prevTeams => prevTeams.filter(team => team._id !== teamId));
+      showModal('Team deleted successfully', 'success');
+      setTeams(prev => prev.filter(team => team._id !== teamId));
     } catch (error) {
-      showModal(error.response?.data?.message || 'Failed to remove team');
+      showModal(error.response?.data?.message || 'Failed to delete team');
     }
   };
 
-  if (!user) {
-    return <p className="text-gray-300 text-center">Loading...</p>;
-  }
-  
-  if (loading) {
-    return <p className="text-gray-300 text-center">Loading teams...</p>;
-  }
+  if (!user) return <p className="text-gray-300 text-center">Loading...</p>;
+  if (loading) return <p className="text-gray-300 text-center">Loading teams...</p>;
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-white mb-6">Team Management</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-700">
-          <thead className="bg-gray-700">
-             {/* ... (Your table headers are correct) ... */}
-             <tr>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Team Name</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Members</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Payment</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Proof</th>
-              <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+    <div className="relative">
+
+      {/* HACKER GRID BACKGROUND */}
+      <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,rgba(0,255,180,0.25),transparent_60%)] pointer-events-none"></div>
+      <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(90deg,#00ffcc33_1px,transparent_1px),linear-gradient(#00ffcc33_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+
+      <h2 className="text-3xl font-extrabold text-[#00F5FF] tracking-wider mb-6 neon-glow">
+        TEAM PAYMENT CONTROL PANEL
+      </h2>
+
+      {/* TABLE */}
+      <div className="overflow-x-auto shadow-[0_0_25px_#00e1ff60] rounded-lg border border-[#00ffc873] bg-[#0a0f12]/80 backdrop-blur-xl">
+
+        <table className="min-w-full divide-y divide-[#00ffc844]">
+          <thead className="bg-[#001f1f]/70">
+            <tr>
+              {['Team Name', 'Members', 'Payment', 'Proof', 'Actions'].map((h) => (
+                <th
+                  key={h}
+                  className="px-4 py-3 text-left text-xs font-bold text-[#00ffe1] uppercase tracking-wider"
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="bg-gray-800 divide-y divide-gray-700">
+
+          <tbody className="divide-y divide-[#00ffc822] bg-[#0b1417]">
             {teams.map(team => (
-              <tr key={team._id}>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-white">{team.name}</td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">{team.members.length} / 3</td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    team.paymentStatus === 'completed' ? 'bg-green-800 text-green-200' : 'bg-yellow-800 text-yellow-200'
-                  }`}>
-                    {team.paymentStatus}
+              <tr
+                key={team._id}
+                className="hover:bg-[#012b2b] transition-all duration-300 hover:shadow-[0_0_15px_#00eaff55]"
+              >
+                <td className="px-4 py-3 text-sm font-semibold text-white">
+                  {team.name}
+                </td>
+
+                <td className="px-4 py-3 text-sm text-[#87f5ff]">
+                  {team.members.length} / 3
+                </td>
+
+                <td className="px-4 py-3 text-sm">
+                  <span
+                    className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                      team.paymentStatus === 'completed'
+                        ? 'bg-[#003322] border-[#00ff99] text-[#00ffbb] shadow-[0_0_10px_#00ff8866]'
+                        : 'bg-[#332b00] border-[#ffcc00] text-[#ffea70] shadow-[0_0_10px_#ffcc0088]'
+                    }`}
+                  >
+                    {team.paymentStatus.toUpperCase()}
                   </span>
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
-                  {/* --- 3. THIS IS THE FIX --- */}
-                  {/* Replaced <button> with <a> tag */}
+
+                <td className="px-4 py-3 text-sm text-[#00eaff]">
                   {team.paymentProof ? (
                     <a
                       href={`http://localhost:5000/${team.paymentProof.replace(/\\/g, '/')}`}
-                      target="_blank" // This opens a new tab
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-400 hover:text-indigo-300 underline"
+                      className="underline hover:text-[#72faff] transition"
                     >
                       {team.transactionId || 'View Proof'}
                     </a>
                   ) : (
-                    'N/A'
+                    <span className="text-gray-500">No Proof</span>
                   )}
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm space-x-2">
-                  {/* Verify Button */}
+
+                <td className="px-4 py-3 text-sm space-x-3">
+
                   {team.paymentStatus === 'pending' && team.paymentProof && (
                     <Button
                       variant="primary"
-                      className="py-1 px-2 text-xs"
+                      className="py-1 px-3 text-xs neon-button"
                       onClick={() => handleVerify(team._id)}
                     >
-                      Verify
+                      VERIFY
                     </Button>
                   )}
-                  {/* Delete Team Button */}
+
                   <Button
                     variant="secondary"
-                    className="py-1 px-2 text-xs !bg-red-800 hover:!bg-red-700"
+                    className="py-1 px-3 text-xs bg-red-900/70 hover:bg-red-700 neon-red"
                     onClick={() => handleDeleteTeam(team._id)}
                   >
-                    Delete Team
+                    DELETE
                   </Button>
+
                 </td>
+
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      {/* --- 4. All modal JSX is GONE --- */}
-      
     </div>
   );
 };

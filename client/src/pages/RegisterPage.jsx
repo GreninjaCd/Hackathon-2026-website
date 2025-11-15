@@ -1,37 +1,30 @@
-import React, { useState } from 'react'; // 1. Import useState
+import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/Button';
-import axios from 'axios'; // 2. Import axios
+import axios from 'axios';
 
 const RegisterPage = () => {
   const { showModal } = useAppContext();
   const navigate = useNavigate();
 
-  // 3. Add state to hold all form data
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     college: '',
-    phone: '', // Added this field (see explanation below)
+    phone: '',
     password: '',
     confirmPassword: '',
   });
 
-  // 4. Create a handler to update state on input change
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 5. (REPLACED) The new handleSubmit function that calls the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, college, phone, password, confirmPassword } = formData;
 
-    // Frontend validation
     if (password !== confirmPassword) {
       showModal("Passwords do not match.");
       return;
@@ -42,106 +35,160 @@ const RegisterPage = () => {
     }
 
     try {
-      // This is the connection to your backend API route
-      await axios.post(
-        'http://localhost:5000/api/auth/register',
-        {
-          name,
-          email,
-          college,
-          phone,
-          password,
-        }
-      );
+      await axios.post('http://localhost:5000/api/auth/register', {
+        name, email, college, phone, password,
+      });
 
-      // If successful:
       showModal("Registration successful! Please log in.", "success");
       navigate('/login');
 
     } catch (error) {
-      // Handles backend errors (e.g., "User already exists")
-      const message = error.response?.data?.message || "Registration failed. Please try again.";
+      const message =
+        error.response?.data?.message || "Registration failed. Please try again.";
       showModal(message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-fadeIn">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-            Create your account
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            {/* 6. Added 'value' and 'onChange' to all inputs */}
-            <input
-              name="name"
-              type="text"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-            />
-            <input
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Email address"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <input
-              name="college"
-              type="text"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="College / Institution Name"
-              value={formData.college}
-              onChange={handleChange}
-            />
-            {/* 7. Added the 'phone' input field (see explanation) */}
-            <input
-              name="phone"
-              type="tel"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-            <input
-              name="password"
-              type="password"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <input
-              name="confirmPassword" // Changed 'confirm-password' to 'confirmPassword'
-              type="password"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-          </div>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
 
-          <div>
-            <Button type="submit" className="w-full justify-center text-lg">
-              Register
-            </Button>
-          </div>
+      {/* Background Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, rgba(0,255,127,0.14) 1px, transparent 1px), linear-gradient(0deg, rgba(0,255,127,0.14) 1px, transparent 1px)",
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      {/* Scanlines */}
+      <div
+        className="absolute inset-0 opacity-[0.08]"
+        style={{
+          backgroundImage:
+            "linear-gradient(0deg, rgba(0,255,127,0.14) 2px, transparent 2px)",
+          backgroundSize: "100% 4px",
+        }}
+      />
+
+      {/* Main Card */}
+      <div className="relative z-10 max-w-md w-full p-10 rounded-xl 
+                      bg-[#001012]/80 backdrop-blur-md
+                      border border-[#00ff7f33]
+                      shadow-[0_0_40px_rgba(0,255,127,0.15)]">
+
+        {/* Title */}
+        <h2 className="text-center text-3xl font-extrabold
+                       bg-gradient-to-r from-[#00ff7f] to-[#00e5ff]
+                       bg-clip-text text-transparent
+                       drop-shadow-[0_0_18px_rgba(0,255,127,0.4)]">
+          Create Your Account
+        </h2>
+
+        {/* FORM */}
+        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+          
+          {/* Name */}
+          <input
+            name="name"
+            type="text"
+            placeholder="Full Name"
+            required
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
+                       border border-[#00ff7f40] rounded-md
+                       placeholder-[#77a69a]
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]
+                       transition-all"
+          />
+
+          {/* Email */}
+          <input
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
+                       border border-[#00ff7f40] rounded-md
+                       placeholder-[#77a69a]
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
+          />
+
+          {/* College */}
+          <input
+            name="college"
+            type="text"
+            placeholder="College / Institution Name"
+            required
+            value={formData.college}
+            onChange={handleChange}
+            className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
+                       border border-[#00ff7f40] rounded-md
+                       placeholder-[#77a69a]
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
+          />
+
+          {/* Phone */}
+          <input
+            name="phone"
+            type="tel"
+            placeholder="Phone Number"
+            required
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
+                       border border-[#00ff7f40] rounded-md
+                       placeholder-[#77a69a]
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
+          />
+
+          {/* Password */}
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
+                       border border-[#00ff7f40] rounded-md
+                       placeholder-[#77a69a]
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
+          />
+
+          {/* Confirm Password */}
+          <input
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            required
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
+                       border border-[#00ff7f40] rounded-md
+                       placeholder-[#77a69a]
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
+          />
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            className="w-full justify-center text-lg"
+          >
+            Register
+          </Button>
         </form>
-        <div className="text-sm text-center">
-          <Link to="/login" className="font-medium text-indigo-400 hover:text-indigo-300">
+
+        {/* Link */}
+        <div className="text-center text-sm mt-4">
+          <Link
+            to="/login"
+            className="text-[#00e5ff] hover:text-[#00ff7f] transition-all"
+          >
             Already have an account? Sign in
           </Link>
         </div>
