@@ -10,11 +10,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://hackathon-frontend1-iy6j.onrender.com"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: '*',
   credentials: true
 }));
 app.use(express.json());
