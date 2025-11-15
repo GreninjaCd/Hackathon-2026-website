@@ -29,22 +29,25 @@ const RegisterPage = () => {
       showModal("Passwords do not match.");
       return;
     }
+
     if (!name || !email || !college || !phone || !password) {
       showModal("Please fill in all fields.");
       return;
     }
 
     try {
-      await axios.post('https://hackathon-backend1-akuo.onrender.com', {
-        name, email, college, phone, password,
-      });
+      await axios.post(
+        'https://hackathon-backend1-akuo.onrender.com/api/auth/register',
+        { name, email, college, phone, password }
+      );
 
       showModal("Registration successful! Please log in.", "success");
       navigate('/login');
 
     } catch (error) {
       const message =
-        error.response?.data?.message || "Registration failed. Please try again.";
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
       showModal(message);
     }
   };
@@ -78,7 +81,6 @@ const RegisterPage = () => {
                       border border-[#00ff7f33]
                       shadow-[0_0_40px_rgba(0,255,127,0.15)]">
 
-        {/* Title */}
         <h2 className="text-center text-3xl font-extrabold
                        bg-gradient-to-r from-[#00ff7f] to-[#00e5ff]
                        bg-clip-text text-transparent
@@ -86,10 +88,8 @@ const RegisterPage = () => {
           Create Your Account
         </h2>
 
-        {/* FORM */}
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           
-          {/* Name */}
           <input
             name="name"
             type="text"
@@ -100,11 +100,9 @@ const RegisterPage = () => {
             className="w-full px-3 py-3 bg-[#020e0c] text-[#a8dfcf]
                        border border-[#00ff7f40] rounded-md
                        placeholder-[#77a69a]
-                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]
-                       transition-all"
+                       focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
           />
 
-          {/* Email */}
           <input
             name="email"
             type="email"
@@ -118,7 +116,6 @@ const RegisterPage = () => {
                        focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
           />
 
-          {/* College */}
           <input
             name="college"
             type="text"
@@ -132,7 +129,6 @@ const RegisterPage = () => {
                        focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
           />
 
-          {/* Phone */}
           <input
             name="phone"
             type="tel"
@@ -146,7 +142,6 @@ const RegisterPage = () => {
                        focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
           />
 
-          {/* Password */}
           <input
             name="password"
             type="password"
@@ -160,7 +155,6 @@ const RegisterPage = () => {
                        focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
           />
 
-          {/* Confirm Password */}
           <input
             name="confirmPassword"
             type="password"
@@ -174,16 +168,11 @@ const RegisterPage = () => {
                        focus:outline-none focus:ring-2 focus:ring-[#00ff7f]"
           />
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full justify-center text-lg"
-          >
+          <Button type="submit" className="w-full justify-center text-lg">
             Register
           </Button>
         </form>
 
-        {/* Link */}
         <div className="text-center text-sm mt-4">
           <Link
             to="/login"
