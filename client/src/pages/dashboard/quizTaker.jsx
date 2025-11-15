@@ -74,7 +74,7 @@ const QuizTaker = () => {
     );
 
     try {
-      const { data } = await axios.post('http://localhost:5000/api/quiz/submit/1', {
+      const { data } = await axios.post('https://hackathon-backend1-akuo.onrender.com/api/quiz/submit/1', {
         submissionId: quizData.submissionId,
         answers: formattedAnswers
       });
