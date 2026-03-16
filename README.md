@@ -3,6 +3,7 @@
 ### **Assignment Submission Report**
 
 **Submitted by:** *Gaurav Ghosh, CSE, NIT Silchar*
+**Backend Development & API Implementation:** **Arghojit Dewanji, CSE, NIT Silchar**
 **Live Website:** [https://hackathon-frontend1-iy6j.onrender.com](https://hackathon-frontend1-iy6j.onrender.com)
 **Tech Stack:** MERN (MongoDB, Express.js, React.js, Node.js)
 
@@ -23,6 +24,8 @@ The system supports:
 * MongoDB Atlas cloud database integration
 
 The application is built using the MERN stack and deployed on Render.
+
+While the project is a full-stack system, **my primary contribution was designing and implementing the backend architecture, APIs, authentication system, and database integration.**
 
 ---
 
@@ -49,15 +52,17 @@ The project follows a **client–server architecture**:
 * Components for forms, dashboards, quizzes, etc.
 * TailwindCSS + custom design
 
-### **Backend (Server) – Node + Express**
+### **Backend (Server) – Node + Express**  *(Developed by Arghojit Dewanji)*
 
-* Authentication routes
-* Team creation and verification
-* Payment proof upload (Multer)
-* Quiz management
-* Certificate management
-* Admin-only routes
-* Middleware for security & error handling
+The backend layer was implemented to handle the core business logic and system security.
+
+* Authentication routes (JWT-based login system)
+* Team creation and verification APIs
+* Payment proof upload system using Multer
+* Quiz management APIs
+* Certificate management routes
+* Admin-only routes with role-based access control
+* Middleware for security, authentication, and centralized error handling
 
 ### **Database – MongoDB Atlas**
 
@@ -67,7 +72,8 @@ The project follows a **client–server architecture**:
 * Submissions
 * Certificates
 * Payments
-  (All connected via Mongoose schemas)
+
+All database collections are connected via **Mongoose schemas and models implemented in the backend layer.**
 
 ---
 
@@ -92,11 +98,11 @@ The project follows a **client–server architecture**:
 
 ### **Technical Features**
 
-* JWT-based secure login
-* Password hashing using bcrypt
-* File upload using Multer
-* Centralized error handling
-* Role-based access control
+* JWT-based secure login *(backend implementation)*
+* Password hashing using bcrypt *(backend security layer)*
+* File upload using Multer *(backend file handling)*
+* Centralized error handling *(Express middleware)*
+* Role-based access control *(admin vs user)*
 * Cloud deployment using Render
 
 ---
@@ -171,3 +177,5 @@ The Hackathon 2026 website is a complete production-level MERN application that 
 * Event workflow design
 * Real-world problem solving
 * Frontend + Backend integration
+
+The **backend system, API layer, authentication flow, and database integration were implemented as part of my contribution to the project**, enabling secure user management, quiz submissions, team handling, and admin control over the platform.
