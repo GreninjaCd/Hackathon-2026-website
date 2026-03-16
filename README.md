@@ -3,8 +3,14 @@
 ### **Assignment Submission Report**
 
 **Submitted by:** *Gaurav Ghosh, CSE, NIT Silchar*
-**Backend Development & API Implementation:** **Arghojit Dewanji, CSE, NIT Silchar**
+
+
+**Backend Development & API Implementation:** *Arghojit Dewanji, CSE, NIT Silchar*
+
+
 **Live Website:** [https://hackathon-frontend1-iy6j.onrender.com](https://hackathon-frontend1-iy6j.onrender.com)
+
+
 **Tech Stack:** MERN (MongoDB, Express.js, React.js, Node.js)
 
 ---
@@ -32,10 +38,20 @@ While the project is a full-stack system, **my primary contribution was designin
 ## **2. Objectives**
 
 ✔ Create a scalable, real-world event management system
+
+
 ✔ Implement a secure authentication mechanism
+
+
 ✔ Manage teams, members, payments, and quiz submissions
+
+
 ✔ Provide an admin-only panel with full event control
+
+
 ✔ Deploy both frontend and backend on cloud platforms
+
+
 ✔ Integrate MongoDB Atlas for cloud database access
 
 ---
@@ -158,11 +174,23 @@ JWT_SECRET=your_secret
 ## **7. Testing Performed**
 
 ✔ Login/Signup tested with real MongoDB Atlas
+
+
 ✔ Team creation & deletion tested
+
+
 ✔ Quiz submission tested
+
+
 ✔ Payment proof upload tested
+
+
 ✔ Certificate upload tested
+
+
 ✔ Leaderboard auto-ranking verified
+
+
 ✔ Admin and user roles validated
 
 ---
